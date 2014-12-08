@@ -20,13 +20,14 @@ def probing_hash(hashkey, size):
 		probe_hash+=1
 	return probe_hash%size
 
-def linear_probing:
+def linear_probing():
 	return 1
 
 def quadratic_probing(hashkey, size):
 	return ((hashkey^2)%(size -1))
 
-
+# Solely for use in the timeit module
+funcs = [probing_hash, linear_probing, quadratic_probing]
 
 class UniversalHash:
 
@@ -72,14 +73,10 @@ class UniversalHash:
 		hashval = (hash_func(key, self.size, self.a, self.b, self.p) + i*probing_hash(key, self.size))%self.size  
 		while self.hashtable[hashval][0] != None and i < 100*self.size:
 			i+=1
-			hashval = (hash_func(key, self.size, self.a, self.b, self.p) + i*probing_hash(key, self.size))%self.size 
-		
+			hashval = (hash_func(key, self.size, self.a, self.b, self.p) + i*probing_hash(key, self.size))%self.size 	
 		if self.isFull:
 			raise RuntimeError("Hash Table is Full")
 		elif i < 100*self.size:
-			print("hashval is %s" %hashval)
-			print("iterations are %s" %i)
-			
 			self.hashtable[hashval][0] = key
 			self.hashtable[hashval][1] = value
 			self.collisions[hashval] = i
@@ -123,15 +120,13 @@ class UniversalHash:
 	    return (self.length==self.size)
 
 	
-def test_univ_hash(size):
-	newHash = UniversalHash(size)
+def test_univ_hash(size, hash_func= hash_func, probing_hash=probing_hash):
+	newHash = UniversalHash(size, hash_func, probing_hash)
 	i=0
 	with open('names_nums.txt', 'r') as f:
 		for line in f.readlines():
 			while i < size:
-				print("iteration is %s"%i)
 				idnum, name = line.strip().split('|')[0], line.strip().split('|')[1]  
-				print("ID: %s Name: %s" %(idnum, name))
 				newHash[int(idnum)] = name
 				i+=1
 	sum_collisions = sum(newHash.collisions)
