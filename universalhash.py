@@ -73,6 +73,7 @@ class UniversalHash:
 		hashval = (hash_func(key, self.size, self.a, self.b, self.p) + i*probing_hash(key, self.size))%self.size  
 		while self.hashtable[hashval][0] != None and i < 100*self.size:
 			i+=1
+			print("Iteration %s and key is %s and hashval is %s"%(i, key, hashval))
 			hashval = (hash_func(key, self.size, self.a, self.b, self.p) + i*probing_hash(key, self.size))%self.size 	
 		if self.isFull:
 			raise RuntimeError("Hash Table is Full")
@@ -82,7 +83,7 @@ class UniversalHash:
 			self.collisions[hashval] = i
 		else:
 			self.unable_to_set +=1
-			raise RuntimeError("Unable to set item")
+			# raise RuntimeError("Unable to set item")
 
 
 	def delete_item(self, key):
@@ -120,15 +121,18 @@ class UniversalHash:
 	    return (self.length==self.size)
 
 	
-def test_univ_hash(size, hash_func= hash_func, probing_hash=probing_hash):
+def test_univ_hash(size, hash_func, probing_hash):
 	newHash = UniversalHash(size, hash_func, probing_hash)
 	i=0
 	with open('names_nums.txt', 'r') as f:
+		#while i < size-1:
 		for line in f.readlines():
-			while i < size:
-				idnum, name = line.strip().split('|')[0], line.strip().split('|')[1]  
-				newHash[int(idnum)] = name
-				i+=1
+			if i == size-1:
+				break
+			idnum, name = line.strip().split('|')[0], line.strip().split('|')[1]  
+			print("SETTING %s"%idnum)
+			newHash[int(idnum)] = name
+			i+=1
 	sum_collisions = sum(newHash.collisions)
 	return sum_collisions, newHash.unable_to_set
 	

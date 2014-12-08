@@ -9,9 +9,9 @@ if __name__ == '__main__':
 	coll_err_time = dict()
 	
 	for i, probfnc in enumerate(funcs):
-		collision, errors = test_univ_hash(100, hash_func=hash_func, probing_hash=probfnc)
+		collision, errors = test_univ_hash(1000, hash_func=hash_func, probing_hash=probfnc)
 		print(funcs[i])
-		t = timeit.Timer("test_univ_hash(10, hash_func = hash_func, \
+		t = timeit.Timer("test_univ_hash(1000, hash_func = hash_func, \
 			probing_hash=probfnc_index)",
 		 "from universalhash import hash_func, probing_hash, linear_probing, quadratic_probing,\
 		  test_univ_hash, funcs; probfnc_index=funcs[%i]"%(i))
