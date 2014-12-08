@@ -1,6 +1,6 @@
 #Test time and number of collisions for hash
 import timeit
-from universalhash import UniversalHash
+import universalhash
 
 
 
