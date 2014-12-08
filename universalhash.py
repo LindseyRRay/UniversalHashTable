@@ -11,6 +11,7 @@ class UniversalHash:
 	def __init__(self, size):
 		self.size = int(size)
 		self.hashtable = tuple([[None, None] for x in range(self.size)])
+		self.collisions = [0 for x in range(self.size)]
 		self.p = self._get_prime()
 		self.a = random.random()
 		self.b = random.randint(0, self.p-1)
@@ -21,7 +22,7 @@ class UniversalHash:
 		return not any((n%i==0 for i in range(3,n-1)))
 
 	def _get_prime(self, p=0):
-		if p ==0:
+		if p == 0:
 			p = random.randint(1000000,10000000)
 		while not self._isprime(p):
 			p+=1
@@ -59,8 +60,10 @@ class UniversalHash:
 		if i < self.size:
 			self.hashtable[hashval][0] = key
 			self.hashtable[hashval][1] = value
+			self.collisions[hashval] = i
 		else:
 			raise RuntimeError("Unable to set item")
+
 
 	def delete_item(self, key):
 		i=0
@@ -75,6 +78,31 @@ class UniversalHash:
 			raise RuntimeError("Unable to delete item")
 
 
+	def __(self):
+	    for entry in self.hashtable:
+	    	if entry[0] != None:
+	    		yield entry[0]
+
+	@property
+	def keys(self):
+		return [entry[0] for entry in self.hashtable if entry[0] not in [None, "DEL"]]
+
+	@property
+	def values(self):
+	    return [entry[1] for entry in self.hashtable if entry[0] not in [None, "DEL"]]
+	
+	@property
+	def length(self):
+	    return len(self.keys)
+	
+def test_univ_hash(size):
+	newHash = UniversalHash(size)
+	with open('names_nums.txt', 'r') as f:
+		for line in f.readlines():
+			idnum, name = line.strip().split('|')[0], line.strip().split('|')[1]  
+			newHash[int(idnum)] = name
+	sum_collisions = sum(newHash.collisions)
+	
 
 if __name__ == '__main__':
 #arguments should be the size of the hash table
@@ -82,10 +110,10 @@ if __name__ == '__main__':
 	print("Hash table size will be %s"%hash_size)
 
 	test_table = UniversalHash(hash_size)
+#Now need to get a random input file and hash it
+#then need to keep track of how many collisions there are
+#time how long it takes to hash the file
 
+# Need a program that tracks time and then plots it 
 
 	
-
-
-#generate p
-#table size 1000
